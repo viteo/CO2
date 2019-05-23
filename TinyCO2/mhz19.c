@@ -36,7 +36,7 @@ int getPPM()
 	{
 		return btoi(response[2],response[3]);
 	}
-	return -1;
+	return 0;
 }
 
 int getTemperature()
@@ -45,7 +45,7 @@ int getTemperature()
 	{
 		return (int)response[4] - 40;
 	}
-	return -1;
+	return 0;
 }
 
 int getStatus()

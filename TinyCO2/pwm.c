@@ -15,11 +15,11 @@ void InitPWM()
 	// F_PWM = F_CPU / (Prescaler * 512)
 	#ifdef PWM_PB0
 	TCCR0A |=(1<<COM0A0);
-	OCR0A = 0;
+	PWM0 = 0;
 	#endif
 	#ifdef PWM_PB1
 	TCCR0A |=(1<<COM0B0);
-	OCR0B = 0;
+	PWM1 = 0;
 	#endif
 	#endif /* !PWM_NORMAL */
 
@@ -29,11 +29,11 @@ void InitPWM()
 	TCCR0A |=(1<<WGM01);
 	#ifdef PWM_PB0
 	TCCR0A |= (1<<COM0A0);
-	OCR0A = 0;
+	PWM0 = 0;
 	#endif
 	#ifdef PWM_PB1
 	TCCR0A |= (1<<COM0B0);
-	OCR0B = 0;
+	PWM1 = 0;
 	#endif
 	#endif /* !PWM_CTC */
 
@@ -43,11 +43,11 @@ void InitPWM()
 	TCCR0A |=(1<<WGM00) | (1<<WGM01);
 	#ifdef PWM_PB0
 	TCCR0A |=(1<<COM0A1) | (0<<COM0A0); // TCNT0 == OCROA ? 0; Overflow ? 1 (inverted)
-	OCR0A = 0;
+	PWM0 = 0;
 	#endif
 	#ifdef PWM_PB1
 	TCCR0A |=(1<<COM0B1) | (1<<COM0B0); // TCNT0 == OCROB ? 1; Overflow ? 0
-	OCR0B = 255;
+	PWM1 = 255;
 	#endif
 	#endif /* !PWM_FAST */
 
@@ -57,11 +57,11 @@ void InitPWM()
 	TCCR0A |=(1<<WGM00);
 	#ifdef PWM_PB0
 	TCCR0A |=(1<<COM0A1) | (0<<COM0A0); //inverted
-	OCR0A = 0;
+	PWM0 = 0;
 	#endif
 	#ifdef PWM_PB1
 	TCCR0A |=(1<<COM0B1) | (1<<COM0B0);
-	OCR0B = 255;
+	PWM1 = 255;
 	#endif
 	#endif /* !PWM_PHASECORRECT */
 
@@ -69,14 +69,3 @@ void InitPWM()
 	TCCR0B |= PRESCALE;
 	#endif
 }
-
-//void InitPWM()
-//{
-//DDRB|=(1<<PB0);
-//
-//TCCR0A |=(1<<WGM00) | (1<<WGM01); 	//Fast_PWM = F_CPU / prescaler*256
-//TCCR0A |=(1<<COM0A1) | (0<<COM0A0); // TCNT0 == OCROA ? 0; Overflow ? 1
-//TCCR0B |= (1<<CS01);  // prescaler = 8
-//OCR0A = 0; // compare register
-//return;
-//}

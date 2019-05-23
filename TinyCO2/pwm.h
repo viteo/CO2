@@ -1,3 +1,5 @@
+#include <avr/io.h>
+
 #ifndef	_PWM_
 #define	_PWM_
 
