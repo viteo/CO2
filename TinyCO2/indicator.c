@@ -1,5 +1,14 @@
+#define LEDOUT PB2
+
 #include "indicator.h"
 #include "pwm.h"
+#include <util/delay.h>
+
+void InitIndicators()
+{
+	DDRB |= (1<<LEDOUT);
+	InitPWM();
+}
 
 void IndicatorSetArrow(SCALE scale, int value)
 {
@@ -24,4 +33,20 @@ void IndicatorSetLed(int value)
 {
 	if(value > 800)
 	return; //turn yellow led
+}
+
+void IndicatorDance()
+{
+	PORTB |= (1 << LEDOUT);
+	for(int i = 0; i<250; i++)
+	{
+		_delay_ms(20);
+		PWM0 = i;
+	}
+	for(int i = 250; i>0; i--)
+	{
+		_delay_ms(20);
+		PWM0 = i;
+	}
+	PORTB &= ~(1 << LEDOUT);
 }

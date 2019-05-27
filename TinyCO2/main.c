@@ -4,15 +4,12 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/wdt.h>
-#include <avr/sleep.h>
-#include "pwm.h"
 #include "mhz19.h"
-#include "uart.h"
 #include "indicator.h"
-#include <util/delay.h>
 
 //PB0 PWM
 //PB1 switch
+//PB2 LED
 //PB3 uart TX
 //PB4 uart RX
 
@@ -43,20 +40,6 @@ ISR(INT0_vect)	//control switching
 	}
 }
 
-void dance()
-{
-	for(int i = 0; i<250; i++)
-	{
-		_delay_ms(20);
-		PWM0 = i;
-	}
-	for(int i = 250; i>0; i--)
-	{
-		_delay_ms(20);
-		PWM0 = i;
-	}
-}
-
 int main(void)
 {
 	if(MCUSR & _BV(WDRF))	// If a reset was caused by the Watchdog Timer...
@@ -65,10 +48,9 @@ int main(void)
 		WDTCR |= (_BV(WDCE) | _BV(WDE));	// Enable the WD Change Bit
 		WDTCR = 0x00;						// Disable the WDT
 	}
-	
-	InitPWM();
-	dance(); //10seconds time to init mhz19
-	IndicatorSetArrow(PPM, 0);
+
+	InitIndicators();
+	IndicatorDance(); //10seconds time to init mhz19
 
 	DDRB &= ~(1 << SWITCH);	//Set SWITCH to logic input
 	PORTB |= (1 << SWITCH);	//Activate Pull-up Resistor
@@ -80,7 +62,7 @@ int main(void)
 	WDTCR = _BV(WDP3) | _BV(WDP0);		// Set Timeout to ~8 seconds and clear WDE
 	
 	if(PINB & (1 << SWITCH))
-		WDTCR |= _BV(WDTIE);				// Enable WDT Interrupt
+		WDTCR |= _BV(WDTIE);			// Enable WDT Interrupt
 	sei();
 
 	for (;;)
