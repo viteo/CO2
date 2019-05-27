@@ -5,9 +5,10 @@
 
 typedef unsigned char byte;
 
-int result;
+byte result;
 
-int retrieveData();
+byte retrieveData();
+byte waitData();
 int getPPM();
-int getTemperature();
-int getStatus();
+byte getTemperature();
+byte getStatus();

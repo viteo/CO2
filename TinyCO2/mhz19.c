@@ -3,6 +3,7 @@
 
 #include "mhz19.h"
 #include "uart.h"
+#include <string.h>
 
 char response[RESPONSE_CNT];
 
@@ -39,16 +40,16 @@ int getPPM()
 	return 0;
 }
 
-int getTemperature()
+byte getTemperature()
 {
 	if(result == MHZ19_RESULT_OK)
 	{
-		return (int)response[4] - 40;
+		return (byte)response[4] - 40;
 	}
 	return 0;
 }
 
-int getStatus()
+byte getStatus()
 {
 	if(result == MHZ19_RESULT_OK)
 	{
@@ -65,29 +66,36 @@ void write(char *command, byte length)
 	}
 }
 
-int retrieveData()
+byte getData()
 {
-	for(byte i = 0; i<RESPONSE_CNT; i++)
-	{
-		response[i] = 0;
-	}
-	
-	write(dataRequest, REQUEST_CNT);
-	
 	for(byte i = 0; i < RESPONSE_CNT;)
 	{
 		char c = uart_getc();
 		response[i++] = c;
 	}
-	byte checkSum = calcCheckSum(response);
 	
 	result = MHZ19_RESULT_OK;
 	if (response[0] != 0xFF)
 	result = MHZ19_RESULT_ERR_FB;
 	if (response[1] != 0x86)
 	result = MHZ19_RESULT_ERR_SB;
+	
+	byte checkSum = calcCheckSum(response);
 	if (response[8] != checkSum)
 	result = MHZ19_RESULT_ERR_CRC;
 	
 	return result;
+}
+
+byte retrieveData()
+{
+	memset(response, 0, RESPONSE_CNT);	
+	write(dataRequest, REQUEST_CNT);	
+	return getData();
+}
+
+byte waitData()
+{	
+	memset(response, 0, RESPONSE_CNT);
+	return getData();
 }
