@@ -28,14 +28,17 @@ ISR(WDT_vect)	//Watchdog timer
 	sei();
 }
 
-ISR(INT0_vect)	//Remote switching
+ISR(INT0_vect)	//control switching
 {
 	if (PINB & (1 << SWITCH))
-	{ //interntal control
-		WDTCR |= _BV(WDTIE); //enable watchdog
+	{ //switch to interntal control
+		{ //software reset
+			WDTCR = (_BV(WDTIF) | _BV(WDE) | _BV(WDCE) | _BV(WDP2) | _BV(WDP0));
+			while(1) {}
+		}
 	}
 	else
-	{ //external control
+	{ //switch to external control
 		WDTCR &= ~(_BV(WDTIE)); //disable watchdog
 	}
 }
@@ -56,47 +59,40 @@ void dance()
 
 int main(void)
 {
-	InitPWM();
-	dance(); //10seconds time to init mhz19
-	IndicatorSetArrow(PPM, 0);
-	
-	DDRB &= ~(1 << SWITCH);	//Set to logic input
-	PORTB |= (1 << SWITCH);	//Activate Pull-up Resistor
-	GIMSK |= (1 << INT0);	//INT0 interrupt  on bit PB1 SWITCH
-	MCUCR |= (1 << ISC00);	//logical change
-	
 	if(MCUSR & _BV(WDRF))	// If a reset was caused by the Watchdog Timer...
 	{
 		MCUSR &= ~_BV(WDRF);				// Clear the WDT reset flag
 		WDTCR |= (_BV(WDCE) | _BV(WDE));	// Enable the WD Change Bit
 		WDTCR = 0x00;						// Disable the WDT
 	}
+	
+	InitPWM();
+	dance(); //10seconds time to init mhz19
+	IndicatorSetArrow(PPM, 0);
+
+	DDRB &= ~(1 << SWITCH);	//Set SWITCH to logic input
+	PORTB |= (1 << SWITCH);	//Activate Pull-up Resistor
+	GIMSK |= (1 << INT0);	//INT0 interrupt on bit PB1 SWITCH
+	MCUCR |= (1 << ISC00);	//logical change
 
 	// Set up Watch Dog Timer for Inactivity
-	WDTCR |= (_BV(WDCE) | _BV(WDE));	// Enable the WD Change Bit
-	WDTCR = _BV(WDTIE) |				// Enable WDT Interrupt
-	_BV(WDP3) | _BV(WDP0);				// Set Timeout to ~8 seconds
-
-	//set_sleep_mode(SLEEP_MODE_IDLE);
-	//sleep_enable();
+	WDTCR |= _BV(WDCE);					// Enable the WD Change Bit
+	WDTCR = _BV(WDP3) | _BV(WDP0);		// Set Timeout to ~8 seconds and clear WDE
+	
+	if(PINB & (1 << SWITCH))
+		WDTCR |= _BV(WDTIE);				// Enable WDT Interrupt
 	sei();
 
 	for (;;)
 	{
 		if(PINB & (1 << SWITCH))
 		{
-			if (MCUCR & _BV(SE))		// If Sleep is Enabled...
-			{
-				cli();					// Disable Interrupts
-				sleep_bod_disable();	// Disable BOD
-				sei();					// Enable Interrupts
-				//sleep_cpu();			// Go to Sleep
-			}
+
 		}
 		else
 		{
 			if(!waitData())
-			{	
+			{
 				int ppm = getPPM();
 				IndicatorSetArrow(PPM, ppm);
 				IndicatorSetLed(ppm);

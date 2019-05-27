@@ -13,7 +13,7 @@ char uart_getc(void)
 	uint8_t sreg;
 
 	sreg = SREG;
-	cli();
+	//cli();
 	PORTB &= ~(1 << UART_RX);
 	DDRB &= ~(1 << UART_RX);
 	__asm volatile(
