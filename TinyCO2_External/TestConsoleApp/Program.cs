@@ -18,13 +18,14 @@ namespace TestConsoleApp
         }
         static void Main(string[] args)
         {
-            var sensor = new MHZ19("COM5");
-            sensor.PropertyChanged += PropertyChangedHandler;
+            using (var sensor = new MHZ19("COM5"))
+            {
+                sensor.PropertyChanged += PropertyChangedHandler;
+                sensor.StartPolling();
 
-            var timer = new Timer(e => { sensor.RequestData(); }, null, TimeSpan.Zero, TimeSpan.FromSeconds(8));
-
-            Console.WriteLine("Press any key to close stop . . .");
-            Console.ReadLine();
+                Console.WriteLine("Press any key to stop . . .");
+                Console.ReadLine();
+            }
         }
     }
 }

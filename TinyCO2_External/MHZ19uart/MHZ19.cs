@@ -2,14 +2,16 @@
 using System.ComponentModel;
 using System.IO.Ports;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace MHZ19uart
 {
-    public class MHZ19 : INotifyPropertyChanged
+    public class MHZ19 : INotifyPropertyChanged, IDisposable
     {
         private SerialPort _serialPort;
-        private int gasConcn;
-        private int temperature;
+        private Timer _pollingTimer;
+        private int _gasConcn;
+        private int _temperature;
         private static readonly byte[] dataRequest = { 0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 };
         //public static readonly byte[] calibZero = { 0xff, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78 };
         //public static readonly byte[] calibSpan = { 0xff, 0x01, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x77 };
@@ -18,10 +20,10 @@ namespace MHZ19uart
 
         /// <summary>Gas Concentration</summary>
         /// <value>PPM - particles per million</value>
-        public int GasConcn { get => gasConcn; private set { gasConcn = value; OnPropertyChanged(); } }
+        public int GasConcn { get => _gasConcn; private set { _gasConcn = value; OnPropertyChanged(); } }
         /// <summary>Sensor temperature</summary>
         /// <value>Celsius</value>
-        public int Temperature { get => temperature; private set { temperature = value; OnPropertyChanged(); } }
+        public int Temperature { get => _temperature; private set { _temperature = value; OnPropertyChanged(); } }
 
         public MHZ19(string portName)
         {
@@ -33,9 +35,25 @@ namespace MHZ19uart
             _serialPort.DataReceived += DataReceivedHandler;
         }
 
-        public void RequestData()
+        public void RequestNewData()
         {
             Write(dataRequest);
+        }
+
+        public void StartPolling([System.ComponentModel.DataAnnotations.Range(6, int.MaxValue)] int timeout = 8)
+        {
+            _pollingTimer = new Timer(e => { this.RequestNewData(); }, null, TimeSpan.Zero, TimeSpan.FromSeconds(timeout));
+        }
+        
+        public void StopPolling()
+        {
+            _pollingTimer.Dispose();
+        }
+
+        public void Dispose()
+        {
+            _pollingTimer?.Dispose();
+            _serialPort.Close();
         }
 
         private void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
@@ -89,6 +107,5 @@ namespace MHZ19uart
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
     }
 }
