@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MHZ19uart", "MHZ19uart\MHZ19uart.csproj", "{2E8B6BF8-6B90-40E0-9EF7-F703F9BF8EBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{D86D5D0A-3C3A-407B-B8DB-5BBC116C7589}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{D86D5D0A-3C3A-407B-B8DB-5BBC116C7589}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyCO2mvvm", "TinyCO2mvvm\TinyCO2mvvm.csproj", "{9E4803BD-B907-492A-BEC9-A90617552D33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{D86D5D0A-3C3A-407B-B8DB-5BBC116C7589}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D86D5D0A-3C3A-407B-B8DB-5BBC116C7589}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D86D5D0A-3C3A-407B-B8DB-5BBC116C7589}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E4803BD-B907-492A-BEC9-A90617552D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E4803BD-B907-492A-BEC9-A90617552D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E4803BD-B907-492A-BEC9-A90617552D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E4803BD-B907-492A-BEC9-A90617552D33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

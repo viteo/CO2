@@ -1,0 +1,51 @@
+﻿<Window x:Class="TinyCO2mvvm.Views.ShellView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cal="http://www.caliburnproject.org"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:models="clr-namespace:TinyCO2mvvm.Models"
+        mc:Ignorable="d"
+        Title="ShellView" Height="600" Width="800"
+        cal:Message.Attach="[Event Closing] = [Action OnClose()]">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ComboBox Grid.Column="0"
+                  Grid.Row="0"
+                  x:Name="SerialPorts"
+                  MinWidth="60"
+                  cal:Message.Attach="[Event DropDownOpened] = [Action UpdatePortList]"/>
+        <Button Grid.Column="1"
+                Grid.Row="0"
+                Content="Connect" 
+                x:Name="Connect"/>
+        <TextBox Grid.Column="0"
+                 Grid.Row="1"  
+                 x:Name="Sensor_GasConcn"
+                 MinWidth="60"/>
+        <ProgressBar Grid.Column="1"
+                     Grid.Row="1"
+                     x:Name="Progress"
+                     Width="150"
+                     Maximum="160"
+                     Height="10"/>
+
+        <oxy:PlotView Grid.Column="0" Grid.ColumnSpan="3"
+                      Grid.Row="2"
+                      Model="{Binding Path=(models:PlotModel.Plot)}"
+                      DataContext="{Binding Plot}">
+        </oxy:PlotView>
+
+    </Grid>
+</Window>
