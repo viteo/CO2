@@ -48,10 +48,11 @@ namespace TinyCO2mvvm.ViewModels
             _progressTimer = new Timer(e => { Progress++; }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(50));
             Sensor.PropertyChanged += (o, a) =>
             {
-                Plot.Series.Points.Add(new OxyPlot.DataPoint(OxyPlot.Axes.DateTimeAxis.ToDouble(DateTime.Now), Sensor.GasConcn));
-                Plot.Plot.InvalidatePlot(true);
                 if (a.PropertyName == "Data")
+                {
                     Progress = 0;
+                    Plot.AddDataPoint(DateTime.Now, Sensor.GasConcn);
+                }
             };
         }
 
