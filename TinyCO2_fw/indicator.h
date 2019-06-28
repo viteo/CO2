@@ -1,4 +1,4 @@
-#define SCALE int
+#define SCALE unsigned char
 #define PPM 0
 #define TEMPERATURE 1
 

@@ -12,6 +12,7 @@
 //PB2 LED
 //PB3 uart TX
 //PB4 uart RX
+//PB5 LED
 
 typedef unsigned char byte;
 

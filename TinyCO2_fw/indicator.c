@@ -1,4 +1,10 @@
-#define LEDOUT PB2
+#define LEDLOW PB2
+#define LEDHIGH PB5
+
+#define LEDOFF (PORTB & ~(1<<LEDLOW)) & ~(1 << LEDHIGH)
+#define LEDGREEN (PORTB | (1 << LEDLOW)) & ~(1 << LEDHIGH)
+#define LEDYELLOW (PORTB | (1 << LEDLOW)) | (1 << LEDHIGH)
+#define LEDRED (PORTB | (1 << LEDHIGH)) & ~(1 << LEDLOW)
 
 #include "indicator.h"
 #include "pwm.h"
@@ -6,7 +12,7 @@
 
 void InitIndicators()
 {
-	DDRB |= (1<<LEDOUT);
+	DDRB |= (1<<LEDLOW) | (1<<LEDHIGH);
 	InitPWM();
 }
 
@@ -31,22 +37,29 @@ void IndicatorSetArrow(SCALE scale, int value)
 
 void IndicatorSetLed(int value)
 {
-	if(value > 800)
-	return; //turn yellow led
+	if(value > 1600)
+		PORTB = LEDRED;
+	else if (value > 1200)
+		PORTB = LEDYELLOW;
+	else if (value > 400)
+		PORTB = LEDGREEN;
+	else
+		PORTB = LEDOFF;
 }
 
 void IndicatorDance()
 {
-	PORTB |= (1 << LEDOUT);
+	PORTB = LEDRED;
 	for(int i = 0; i<250; i++)
 	{
 		_delay_ms(20);
 		PWM0 = i;
 	}
+	PORTB = LEDYELLOW;
 	for(int i = 250; i>0; i--)
 	{
 		_delay_ms(20);
 		PWM0 = i;
 	}
-	PORTB &= ~(1 << LEDOUT);
+	PORTB = LEDGREEN;
 }
