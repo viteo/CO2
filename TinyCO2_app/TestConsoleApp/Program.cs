@@ -21,7 +21,7 @@ namespace TestConsoleApp
             using (var sensor = new MHZ19("COM5"))
             {
                 sensor.PropertyChanged += PropertyChangedHandler;
-                sensor.StartPolling();
+                //sensor.StartPolling();
 
                 Console.WriteLine("Press any key to stop . . .");
                 Console.ReadLine();
