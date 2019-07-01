@@ -1,4 +1,4 @@
-#define SWITCH PB1
+#define SWITCH PB5
 #define _BV(x)   (1 << x)
 
 #include <avr/io.h>
@@ -8,11 +8,11 @@
 #include "indicator.h"
 
 //PB0 PWM
-//PB1 switch
+//PB1 LED
 //PB2 LED
 //PB3 uart TX
 //PB4 uart RX
-//PB5 LED
+//PB5 switch
 
 typedef unsigned char byte;
 
@@ -26,7 +26,7 @@ ISR(WDT_vect)	//Watchdog timer
 	sei();
 }
 
-ISR(INT0_vect)	//control switching
+ISR(PCINT0_vect)	//control switching
 {
 	if (PINB & (1 << SWITCH))
 	{ //switch to interntal control
@@ -55,7 +55,8 @@ int main(void)
 
 	DDRB &= ~(1 << SWITCH);	//Set SWITCH to logic input
 	PORTB |= (1 << SWITCH);	//Activate Pull-up Resistor
-	GIMSK |= (1 << INT0);	//INT0 interrupt on bit PB1 SWITCH
+	PCMSK |= (1 << PCINT5); //Pin change mask
+	GIMSK |= (1 << PCIE);	//Pin change interrupt on bit SWITCH
 	MCUCR |= (1 << ISC00);	//logical change
 
 	// Set up Watch Dog Timer for Inactivity

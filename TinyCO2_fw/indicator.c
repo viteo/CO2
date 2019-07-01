@@ -1,10 +1,10 @@
-#define LEDLOW PB2
-#define LEDHIGH PB5
+#define LEDLOW PB1
+#define LEDHIGH PB2
 
 #define LEDOFF (PORTB & ~(1<<LEDLOW)) & ~(1 << LEDHIGH)
 #define LEDGREEN (PORTB | (1 << LEDLOW)) & ~(1 << LEDHIGH)
-#define LEDYELLOW (PORTB | (1 << LEDLOW)) | (1 << LEDHIGH)
-#define LEDRED (PORTB | (1 << LEDHIGH)) & ~(1 << LEDLOW)
+#define LEDYELLOW (PORTB | (1 << LEDHIGH)) & ~(1 << LEDLOW)
+#define LEDRED (PORTB | (1 << LEDLOW)) | (1 << LEDHIGH)
 
 #include "indicator.h"
 #include "pwm.h"
