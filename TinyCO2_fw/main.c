@@ -78,8 +78,15 @@ int main(void)
 			if(!waitData())
 			{
 				int ppm = getPPM();
-				IndicatorSetArrow(PPM, ppm);
-				IndicatorSetLed(ppm);
+				if(ppm > 0) // Check if value is correct
+				{
+					IndicatorSetArrow(PPM, ppm);
+					IndicatorSetLed(ppm);
+				}
+				else
+				{
+					IndicatorSetLed(0); // else turn LEDs off
+				}
 			}
 			sei();
 		}
